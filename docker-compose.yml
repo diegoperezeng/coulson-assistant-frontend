@@ -1,0 +1,28 @@
+services:
+  coulson-assistant-frontend:
+    build:
+      context: .
+      args:
+        BASE_PATH: ${BASE_PATH:-/coulson-app}
+        PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-/coulson-api}
+        PUBLIC_ACCESS_PASSWORD: ${PUBLIC_ACCESS_PASSWORD:-}
+        PUBLIC_COULSON_API_TOKEN: ${PUBLIC_COULSON_API_TOKEN:-}
+        PUBLIC_API_BEARER_TOKEN: ${PUBLIC_API_BEARER_TOKEN:-}
+    container_name: coulson-assistant-frontend
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - BODY_SIZE_LIMIT=4368709120
+    networks:
+      - yellowleaf-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/coulson-app"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  yellowleaf-net:
+    external: true

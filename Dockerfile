@@ -1,0 +1,38 @@
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+
+ARG BASE_PATH=/coulson-app
+ARG PUBLIC_API_BASE_URL=/coulson-api
+ARG PUBLIC_ACCESS_PASSWORD
+ARG PUBLIC_COULSON_API_TOKEN
+ARG PUBLIC_API_BEARER_TOKEN
+
+ENV BASE_PATH=${BASE_PATH}
+ENV PUBLIC_API_BASE_URL=${PUBLIC_API_BASE_URL}
+ENV PUBLIC_ACCESS_PASSWORD=${PUBLIC_ACCESS_PASSWORD:-}
+ENV PUBLIC_COULSON_API_TOKEN=${PUBLIC_COULSON_API_TOKEN:-}
+ENV PUBLIC_API_BEARER_TOKEN=${PUBLIC_API_BEARER_TOKEN:-}
+
+RUN npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/package-lock.json ./
+
+RUN npm ci --omit=dev
+
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV BODY_SIZE_LIMIT=4368709120
+
+EXPOSE 3000
+
+CMD ["node", "build"]
