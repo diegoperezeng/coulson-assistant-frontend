@@ -7,7 +7,7 @@
 		onclose: () => void;
 		children: Snippet;
 		footer?: Snippet;
-		size?: 'sm' | 'md' | 'lg';
+		size?: 'sm' | 'md' | 'lg' | 'xl';
 	}
 
 	let { title, onclose, children, footer, size = 'md' }: Props = $props();
@@ -15,7 +15,8 @@
 	const sizeClass = {
 		sm: 'max-w-sm',
 		md: 'max-w-lg',
-		lg: 'max-w-2xl'
+		lg: 'max-w-2xl',
+		xl: 'max-w-4xl'
 	};
 
 	function handleBackdrop(e: MouseEvent) {
