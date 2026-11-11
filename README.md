@@ -1,68 +1,68 @@
 # Coulson Assistant Frontend
 
-Interface web do Coulson Assistant para operação de pré-configuração:
+Web UI for Coulson Assistant pre-configuration and operations:
 
-- gestão de times
-- gestão de participantes (com amostra de voz)
-- upload de vídeos por time
-- listagem e reprodução de vídeos persistidos
+- team management
+- participant management (with voice samples)
+- video upload per team
+- listing and playback of persisted videos
 
-O projeto roda em `SvelteKit 2` com `Svelte 5`, `TypeScript`, `Tailwind CSS v4` e empacotamento via Docker.
+Built with `SvelteKit 2`, `Svelte 5`, `TypeScript`, `Tailwind CSS v4`, and packaged with Docker.
 
-## Arquitetura de acesso
+## Access architecture
 
-- Frontend publicado via Kong em `/coulson-app`
-- Backend acessado pelo frontend via Kong em `/coulson` e `/coulson-api`
-- Autenticação de acesso da interface por senha de aplicação
-- Reprodução de vídeo por URL assinada do Supabase Storage (bucket privado)
+- Frontend published through Kong at `/coulson-app`
+- Backend reached by the frontend through Kong at `/coulson` and `/coulson-api`
+- UI access protected by an application password
+- Video playback uses signed URLs from private Supabase Storage buckets
 
-## Fluxo de execução
+## Run locally
 
-Este repositório está configurado para fluxo Docker-first.
+This repository is Docker-first:
 
 ```sh
 docker compose --env-file ".env" up --build -d
 ```
 
-Esse comando recompila a imagem quando houver mudança no código e sobe o container `coulson-assistant-frontend`.
+That rebuilds the image when code changes and starts the `coulson-assistant-frontend` container.
 
-## Variáveis de ambiente
+## Environment variables
 
-Crie um arquivo `.env` na raiz do frontend com:
+Create a `.env` file in the frontend root:
 
 ```env
 PUBLIC_API_BASE_URL=https://yellowleafapps.cloud/coulson
 PUBLIC_API_BEARER_TOKEN=<token_jwt>
-PUBLIC_ACCESS_PASSWORD=<senha_da_interface>
-PUBLIC_COULSON_API_TOKEN=<token_x_app_token>
+PUBLIC_ACCESS_PASSWORD=<ui_password>
+PUBLIC_COULSON_API_TOKEN=<x_app_token>
 ```
 
-Notas:
+Notes:
 
-- `PUBLIC_API_BASE_URL` é a base usada pelo client para chamadas REST.
-- `PUBLIC_ACCESS_PASSWORD` protege a UI no login da aplicação.
-- `PUBLIC_COULSON_API_TOKEN` é enviado no header `X-App-Token`.
-- `PUBLIC_API_BEARER_TOKEN` é enviado no header `Authorization`.
+- `PUBLIC_API_BASE_URL` is the REST client base URL
+- `PUBLIC_ACCESS_PASSWORD` protects the UI login screen
+- `PUBLIC_COULSON_API_TOKEN` is sent as the `X-App-Token` header
+- `PUBLIC_API_BEARER_TOKEN` is sent as the `Authorization` header
 
-## Rotas principais
+## Main routes
 
-- `/login`: autenticação da interface
-- `/teams`: CRUD de times e membros
-- `/participants`: CRUD de participantes e amostra de voz
-- `/videos`: catálogo de vídeos por time e player
-- `/videos/upload`: upload para persistência e transcrição
+- `/login`: UI authentication
+- `/teams`: team and member CRUD
+- `/participants`: participant CRUD and voice samples
+- `/videos`: video catalog by team and player
+- `/videos/upload`: upload for persistence and transcription
 
-## Build e runtime
+## Build and runtime
 
-- Build de produção com `vite build`
-- Runtime com `adapter-node`
-- Healthcheck do container em `http://localhost:3000/coulson-app`
+- Production build with `vite build`
+- Runtime with `adapter-node`
+- Container healthcheck at `http://localhost:3000/coulson-app`
 
-## Estrutura resumida
+## Project layout
 
-- `src/lib/api.ts`: client HTTP e tipagens dos endpoints
-- `src/lib/auth.ts`: autenticação local da interface
-- `src/lib/components`: componentes reutilizáveis (sidebar, modal, toast, player)
-- `src/routes`: páginas e fluxo de navegação
-- `docker-compose.yml`: serviço de execução em container
-- `Dockerfile`: build multi-stage e runtime enxuto
+- `src/lib/api.ts`: HTTP client and endpoint typings
+- `src/lib/auth.ts`: local UI authentication
+- `src/lib/components`: reusable components (sidebar, modal, toast, player)
+- `src/routes`: pages and navigation flow
+- `docker-compose.yml`: container runtime service
+- `Dockerfile`: multi-stage build and lean runtime image
