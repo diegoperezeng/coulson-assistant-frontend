@@ -66,3 +66,7 @@ Notes:
 - `src/routes`: pages and navigation flow
 - `docker-compose.yml`: container runtime service
 - `Dockerfile`: multi-stage build and lean runtime image
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
